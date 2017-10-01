@@ -4,6 +4,9 @@ def app = project.property('DB_APP_USER')
 def dbadmin = project.property('DB_ADMIN')
 def adminpwd = project.property('DB_ADMIN_PWD')
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
 buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
@@ -35,6 +38,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
+	runtime('org.postgresql:postgresql')
 }
 
 task baseline(type :Exec){
