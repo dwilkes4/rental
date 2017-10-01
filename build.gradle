@@ -1,3 +1,9 @@
+def dbname = project.property('DB_NAME')
+def apppwd = project.property('DB_APP_USER_PWD')
+def app = project.property('DB_APP_USER')
+def dbadmin = project.property('DB_ADMIN')
+def adminpwd = project.property('DB_ADMIN_PWD')
+
 buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
@@ -30,3 +36,15 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
 }
+
+task baseline(type :Exec){
+	executable "sh"
+	args "-c", "./db/baseline/create-db.sh $dbadmin $adminpwd $dbname $app $apppwd"
+}
+
+task dropDB(type :Exec){
+	executable "sh"
+	args "-c", "./db/baseline/drop-db.sh $dbadmin $adminpwd $dbname $app"
+}
+
+baseline.dependsOn dropDB
