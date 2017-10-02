@@ -4,6 +4,10 @@ def app = project.property('DB_APP_USER')
 def dbadmin = project.property('DB_ADMIN')
 def adminpwd = project.property('DB_ADMIN_PWD')
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'liquibase'
+
 buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
@@ -13,6 +17,9 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'org.liquibase:liquibase-core:3.4.1'
+    	classpath "org.liquibase:liquibase-gradle-plugin:1.1.1"
+		classpath 'org.postgresql:postgresql:42.1.4'
 	}
 }
 
@@ -35,6 +42,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.security:spring-security-test')
+	runtime('org.postgresql:postgresql')
 }
 
 task baseline(type :Exec){
@@ -48,3 +56,19 @@ task dropDB(type :Exec){
 }
 
 baseline.dependsOn dropDB
+
+def changeLog = "db/update/changelog.xml"
+
+liquibase {
+	activities {
+		main {
+			changeLogFile changeLog
+			url "jdbc:postgresql://localhost:5432/$dbname"
+			username "$dbadmin"
+			password "$adminpwd"
+		}
+	}
+	dependencies {
+		runtime('org.postgresql:postgresql')
+	}
+}    
