@@ -1,5 +1,9 @@
 package com.wilkestech.rental.domain.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.wilkestech.rental.domain.Image;
 import com.wilkestech.rental.domain.Property;
 
 public class PropertyDTO {
@@ -9,6 +13,8 @@ public class PropertyDTO {
 	private String name;
 	
     private Long owner;
+    
+    private List<ImageDTO> images = new ArrayList<ImageDTO>();
 
     public PropertyDTO() {};
     
@@ -16,6 +22,9 @@ public class PropertyDTO {
     	this.id = property.getId();
     	this.name = property.getName();
     	this.owner = property.getOwner().getId();
+    	for(Image image : property.getImages()) {
+    		images.add(new ImageDTO(image));
+    	}
     }
 	
 	public Long getId() {
@@ -40,6 +49,14 @@ public class PropertyDTO {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<ImageDTO> getImages() {
+		return images;
+	}
+
+	public void setImages(List<ImageDTO> images) {
+		this.images = images;
 	}
 	
 }
